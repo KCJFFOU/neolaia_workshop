@@ -1,29 +1,18 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="Indexy pro jednotlivé texty", layout="wide")
+st.set_page_config(page_title="Indexy textů", layout="centered")
 
-st.title("📄 Hodnoty jazykových indexů")
+st.title("📋 Jazykové indexy jednotlivých textů")
 
-# Načíst soubor
+# Načtení dat
 df = pd.read_excel("capek-pca.xlsx")
 
-# Vygenerovat scrollovatelnou tabulku s fixovaným headerem
-st.markdown(
-    """
-    <style>
-    .dataframe-container {
-        height: 600px;
-        overflow-y: auto;
-        border: 1px solid #ddd;
-        background-color: white;
-        padding: 10px;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+# Výběr textu
+text_names = df.iloc[:, 0].tolist()
+selected_text = st.selectbox("Vyber text:", text_names)
 
-st.markdown("<div class='dataframe-container'>", unsafe_allow_html=True)
-st.dataframe(df, use_container_width=True)
-st.markdown("</div>", unsafe_allow_html=True)
+# Výpis indexů pro vybraný text
+selected_row = df[df.iloc[:, 0] == selected_text].iloc[:, 1:]
+st.write("### Hodnoty indexů:")
+st.dataframe(selected_row.T.rename(columns={selected_row.index[0]: "Hodnota"}))
